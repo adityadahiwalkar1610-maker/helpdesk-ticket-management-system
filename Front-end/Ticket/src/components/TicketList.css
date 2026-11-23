@@ -1,0 +1,532 @@
+
+/* ========================================
+   ALL TICKETS - MAIN CARD
+======================================== */
+
+.table-card {
+    width: 100%;
+    padding: 25px;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+    box-sizing: border-box;
+}
+
+/* ========================================
+   TABLE HEADING
+======================================== */
+
+.ticket-table-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 22px;
+    gap: 15px;
+}
+
+.ticket-table-heading h3 {
+    margin: 0;
+    color: #1e293b;
+    font-size: 22px;
+    font-weight: 700;
+}
+
+.ticket-table-heading p {
+    margin: 6px 0 0;
+    color: #64748b;
+    font-size: 14px;
+}
+
+.ticket-count {
+    padding: 7px 13px;
+    color: #2563eb;
+    background: #eff6ff;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+/* ========================================
+   TABLE
+======================================== */
+
+.table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+}
+
+.ticket-table {
+    width: 100%;
+    min-width: 750px;
+    border-collapse: collapse;
+    background: #ffffff;
+}
+
+.ticket-table thead {
+    background: #f8fafc;
+}
+
+.ticket-table th {
+    padding: 16px;
+    color: #64748b;
+    text-align: left;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    border-bottom: 1px solid #e2e8f0;
+    white-space: nowrap;
+}
+
+.ticket-table td {
+    padding: 17px 16px;
+    color: #334155;
+    font-size: 14px;
+    border-bottom: 1px solid #f1f5f9;
+    vertical-align: middle;
+}
+
+.ticket-table tbody tr:hover {
+    background: #f8fafc;
+}
+
+.ticket-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* ========================================
+   TICKET ID
+======================================== */
+
+.ticket-id {
+    color: #2563eb;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+/* ========================================
+   TICKET DETAILS
+======================================== */
+
+.ticket-details-cell strong {
+    display: block;
+    margin-bottom: 6px;
+    color: #1e293b;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.ticket-description {
+    max-width: 300px;
+    margin: 0;
+    color: #64748b;
+    font-size: 13px;
+    line-height: 1.6;
+    overflow-wrap: anywhere;
+}
+
+/* ========================================
+   PRIORITY BADGES
+======================================== */
+
+.ticket-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 7px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.priority-low {
+    color: #15803d;
+    background: #dcfce7;
+}
+
+.priority-medium {
+    color: #b45309;
+    background: #fef3c7;
+}
+
+.priority-high {
+    color: #dc2626;
+    background: #fee2e2;
+}
+
+/* ========================================
+   STATUS BADGES
+======================================== */
+
+.status-open {
+    color: #2563eb;
+    background: #dbeafe;
+}
+
+.status-in_progress {
+    color: #b45309;
+    background: #fef3c7;
+}
+
+.status-resolved {
+    color: #15803d;
+    background: #dcfce7;
+}
+
+.status-closed {
+    color: #64748b;
+    background: #e2e8f0;
+}
+
+/* ========================================
+   STAFF SELECT INPUTS
+======================================== */
+
+.ticket-select {
+    min-width: 110px;
+    padding: 9px 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 7px;
+    outline: none;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    background: #ffffff;
+    transition: 0.2s ease;
+}
+
+.ticket-select:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.ticket-select:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.ticket-updating {
+    display: block;
+    margin-top: 5px;
+    color: #64748b;
+    font-size: 11px;
+}
+
+/* ========================================
+   EDIT AND DELETE BUTTON CONTAINER
+======================================== */
+
+.ticket-action-buttons {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 10px;
+    white-space: nowrap;
+}
+
+/* Common button styling */
+
+.ticket-action-buttons button {
+    min-width: 82px;
+    padding: 9px 15px;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+/* ========================================
+   EDIT BUTTON
+======================================== */
+
+.ticket-edit-button {
+    color: #2563eb;
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+}
+
+.ticket-edit-button:hover {
+    color: #ffffff;
+    background: #2563eb;
+    border-color: #2563eb;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(37, 99, 235, 0.2);
+}
+
+/* ========================================
+   DELETE BUTTON
+======================================== */
+
+.ticket-delete-button {
+    color: #dc2626;
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+}
+
+.ticket-delete-button:hover {
+    color: #ffffff;
+    background: #dc2626;
+    border-color: #dc2626;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(220, 38, 38, 0.2);
+}
+
+/* Button click */
+
+.ticket-action-buttons button:active {
+    transform: scale(0.96);
+}
+
+/* Disabled buttons */
+
+.ticket-action-buttons button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* ========================================
+   EDIT FORM ROW
+======================================== */
+
+.ticket-edit-row {
+    background: #f8fafc !important;
+}
+
+.ticket-edit-row td {
+    padding: 20px !important;
+}
+
+.ticket-edit-form {
+    width: 100%;
+    padding: 22px;
+    background: #ffffff;
+    border: 1px solid #dbeafe;
+    border-radius: 12px;
+    box-sizing: border-box;
+}
+
+/* Edit heading */
+
+.ticket-edit-heading {
+    margin-bottom: 20px;
+}
+
+.ticket-edit-heading h4 {
+    margin: 0 0 6px;
+    color: #1e293b;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.ticket-edit-heading p {
+    margin: 0;
+    color: #64748b;
+    font-size: 13px;
+}
+
+/* Edit fields */
+
+.ticket-edit-field {
+    margin-bottom: 17px;
+}
+
+.ticket-edit-field label {
+    display: block;
+    margin-bottom: 8px;
+    color: #334155;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.ticket-edit-field input,
+.ticket-edit-field textarea {
+    display: block;
+    width: 100%;
+    padding: 12px 14px;
+    color: #1e293b;
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    outline: none;
+    font-family: inherit;
+    font-size: 14px;
+    box-sizing: border-box;
+    transition: 0.2s ease;
+}
+
+.ticket-edit-field textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.ticket-edit-field input:focus,
+.ticket-edit-field textarea:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+/* ========================================
+   EDIT FORM ACTION BUTTONS
+======================================== */
+
+.ticket-edit-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.ticket-cancel-button,
+.ticket-save-button {
+    padding: 10px 19px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.ticket-cancel-button {
+    color: #475569;
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+}
+
+.ticket-cancel-button:hover {
+    background: #f1f5f9;
+}
+
+.ticket-save-button {
+    color: #ffffff;
+    background: #2563eb;
+    border: 1px solid #2563eb;
+}
+
+.ticket-save-button:hover {
+    background: #1d4ed8;
+}
+
+.ticket-edit-actions button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* ========================================
+   SUCCESS AND ERROR MESSAGES
+======================================== */
+
+.ticket-status-message {
+    padding: 12px 15px;
+    margin-bottom: 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.ticket-error-message {
+    color: #b91c1c;
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+}
+
+.ticket-success-message {
+    color: #15803d;
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+}
+
+/* ========================================
+   EMPTY STATE
+======================================== */
+
+.ticket-empty-state {
+    padding: 55px 20px;
+    text-align: center;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+}
+
+.ticket-empty-icon {
+    margin-bottom: 12px;
+    color: #94a3b8;
+    font-size: 42px;
+}
+
+.ticket-empty-state h3 {
+    margin: 0 0 8px;
+    color: #1e293b;
+    font-size: 19px;
+}
+
+.ticket-empty-state p {
+    max-width: 350px;
+    margin: 0 auto;
+    color: #64748b;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.ticket-no-action {
+    color: #94a3b8;
+}
+
+/* ========================================
+   RESPONSIVE DESIGN
+======================================== */
+
+@media (max-width: 768px) {
+    .table-card {
+        padding: 15px;
+    }
+
+    .ticket-table-heading h3 {
+        font-size: 19px;
+    }
+
+    .ticket-table th,
+    .ticket-table td {
+        padding: 12px;
+    }
+
+    .ticket-action-buttons {
+        gap: 7px;
+    }
+
+    .ticket-action-buttons button {
+        min-width: 68px;
+        padding: 8px 10px;
+        font-size: 12px;
+    }
+
+    .ticket-edit-form {
+        padding: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .ticket-table-heading {
+        align-items: flex-start;
+    }
+
+    .ticket-edit-actions {
+        flex-direction: column-reverse;
+    }
+
+    .ticket-edit-actions button {
+        width: 100%;
+    }
+}

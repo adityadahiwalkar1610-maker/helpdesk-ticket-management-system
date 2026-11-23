@@ -1,0 +1,149 @@
+
+.form-card {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 30px;
+    background: #ffffff;
+    border: 1px solid #e8edf4;
+    border-radius: 16px;
+    box-shadow: 0 5px 22px rgba(15, 23, 42, 0.05);
+}
+
+.form-card .section-title {
+    margin-bottom: 28px;
+}
+
+.form-card .section-title h3 {
+    margin: 0 0 8px;
+    color: #172033;
+    font-size: 22px;
+    font-weight: 700;
+}
+
+.form-card .section-title p {
+    margin: 0;
+    color: #7b8495;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 22px;
+}
+
+.form-grid .field {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    gap: 9px;
+}
+
+.form-grid .field.full-width {
+    grid-column: 1 / -1;
+}
+
+.form-grid .field label {
+    color: #344054;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.form-grid .field input,
+.form-grid .field textarea,
+.form-grid .field select {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 13px 15px;
+    border: 1px solid #dce2eb;
+    border-radius: 9px;
+    background: #ffffff;
+    color: #253047;
+    font-family: inherit;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-grid .field input,
+.form-grid .field select {
+    min-height: 46px;
+}
+
+.form-grid .field textarea {
+    min-height: 145px;
+    resize: vertical;
+    line-height: 1.6;
+}
+
+.form-grid .field input::placeholder,
+.form-grid .field textarea::placeholder {
+    color: #a0a8b7;
+}
+
+.form-grid .field input:focus,
+.form-grid .field textarea:focus,
+.form-grid .field select:focus {
+    border-color: #5269e8;
+    box-shadow: 0 0 0 3px rgba(82, 105, 232, 0.12);
+}
+
+.ticket-form-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 26px;
+}
+
+.ticket-form-actions button {
+    min-height: 46px;
+    padding: 0 24px;
+    border: none;
+    border-radius: 9px;
+    background: #5269e8;
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s;
+}
+
+.ticket-form-actions button:hover {
+    background: #4055d1;
+    transform: translateY(-1px);
+}
+
+.ticket-form-actions button:disabled {
+    background: #a5aedf;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.ticket-form-error {
+    margin-bottom: 20px;
+    padding: 12px 15px;
+    border: 1px solid #fecaca;
+    border-radius: 8px;
+    background: #fef2f2;
+    color: #b42318;
+    font-size: 13px;
+}
+
+@media (max-width: 600px) {
+    .form-card {
+        padding: 20px;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+        gap: 18px;
+    }
+
+    .form-grid .field.full-width {
+        grid-column: auto;
+    }
+
+    .ticket-form-actions button {
+        width: 100%;
+    }
+}

@@ -1,0 +1,35 @@
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Build files
+dist/
+build/
+target/
+**/dist/
+**/build/
+**/target/
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# IDE files
+.idea/
+.vscode/
+*.iml
+
+# OS files
+.DS_Store
+Thumbs.db
+
+
+# Private backend configuration
+Back-end/demo/demo/src/main/resources/application.properties
+
+# Node dependencies
+**/node_modules/
+
+# Eclipse workspace files
+Back-end/.metadata/
