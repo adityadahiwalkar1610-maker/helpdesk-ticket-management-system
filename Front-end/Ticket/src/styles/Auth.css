@@ -1,72 +1,61 @@
 
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
-
-body {
-    font-family: Arial, Helvetica, sans-serif;
-    background: #f1f5f9;
-}
+/* ==============================
+   AUTH CONTAINER
+============================== */
 
 .auth-container {
     min-height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 24px;
-    background: linear-gradient(135deg, #eef2ff, #f8fafc);
+    background: linear-gradient(135deg, #eef2ff, #dbeafe);
+    padding: 20px;
+    font-family: Arial, sans-serif;
 }
+
+/* ==============================
+   AUTH CARD
+============================== */
 
 .auth-card {
     width: 100%;
-    max-width: 440px;
-    background: white;
+    max-width: 430px;
+    background: #ffffff;
     padding: 40px;
-    border-radius: 18px;
-    box-shadow: 0 15px 45px rgba(15, 23, 42, 0.08);
+    border-radius: 14px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.10);
+    box-sizing: border-box;
 }
 
 .auth-logo {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 32px;
-    color: #172554;
-    font-size: 22px;
+    text-align: center;
+    color: #2563eb;
+    font-size: 28px;
     font-weight: 700;
-}
-
-.logo-icon {
-    height: 42px;
-    width: 42px;
-    background: #2563eb;
-    color: white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 12px;
-    font-size: 22px;
+    margin-bottom: 25px;
 }
 
 .auth-card h1 {
+    text-align: center;
+    color: #1e293b;
     font-size: 28px;
-    color: #0f172a;
     margin-bottom: 10px;
 }
 
 .auth-subtitle {
+    text-align: center;
     color: #64748b;
     font-size: 14px;
-    line-height: 1.6;
     margin-bottom: 28px;
 }
+
+/* ==============================
+   FORM GROUP
+============================== */
 
 .form-group {
     display: flex;
     flex-direction: column;
-    gap: 8px;
     margin-bottom: 20px;
 }
 
@@ -74,79 +63,216 @@ body {
     color: #334155;
     font-size: 14px;
     font-weight: 600;
+    margin-bottom: 8px;
 }
 
 .form-group input {
     width: 100%;
     padding: 13px 14px;
-    border: 1px solid #dbe2ea;
-    border-radius: 9px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
     outline: none;
     font-size: 14px;
-    transition: 0.2s;
+    box-sizing: border-box;
+    transition: border-color 0.2s, box-shadow 0.2s;
 }
 
 .form-group input:focus {
     border-color: #2563eb;
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
 }
+
+.form-group input::placeholder {
+    color: #94a3b8;
+}
+
+/* ==============================
+   PASSWORD INPUT
+============================== */
+
+.password-input {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.password-input input {
+    padding-right: 65px;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 12px;
+    border: none;
+    background: transparent;
+    color: #2563eb;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.password-toggle:hover {
+    color: #1d4ed8;
+}
+
+/* ==============================
+   FORGOT PASSWORD
+============================== */
+
+.forgot-password-link {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: -8px;
+    margin-bottom: 20px;
+}
+
+.forgot-password-link button {
+    background: none;
+    border: none;
+    color: #2563eb;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.forgot-password-link button:hover {
+    color: #1d4ed8;
+    text-decoration: underline;
+}
+
+/* ==============================
+   SHOW PASSWORD CHECKBOX
+============================== */
+
+.show-password-option {
+    margin-bottom: 18px;
+}
+
+.show-password-option label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #475569;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.show-password-option input {
+    width: 15px;
+    height: 15px;
+    cursor: pointer;
+}
+
+/* ==============================
+   AUTH BUTTON
+============================== */
 
 .auth-button {
     width: 100%;
     padding: 14px;
     border: none;
-    border-radius: 9px;
+    border-radius: 8px;
     background: #2563eb;
-    color: white;
+    color: #ffffff;
     font-size: 15px;
     font-weight: 600;
     cursor: pointer;
-    transition: 0.2s;
+    transition: background 0.2s, transform 0.2s;
 }
 
 .auth-button:hover {
     background: #1d4ed8;
 }
 
+.auth-button:active {
+    transform: scale(0.98);
+}
+
 .auth-button:disabled {
-    opacity: 0.65;
+    background: #93c5fd;
     cursor: not-allowed;
 }
+
+/* ==============================
+   ERROR MESSAGE
+============================== */
+
+.error-message {
+    color: #dc2626;
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    padding: 10px 12px;
+    border-radius: 7px;
+    font-size: 13px;
+    margin-bottom: 15px;
+}
+
+/* ==============================
+   SUCCESS MESSAGE
+============================== */
+
+.success-message {
+    color: #15803d;
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    padding: 10px 12px;
+    border-radius: 7px;
+    font-size: 13px;
+    margin-bottom: 15px;
+}
+
+/* ==============================
+   AUTH FOOTER
+============================== */
 
 .auth-footer {
     text-align: center;
     color: #64748b;
     font-size: 14px;
-    margin-top: 24px;
+    margin-top: 25px;
 }
 
 .auth-footer a {
     color: #2563eb;
-    text-decoration: none;
     font-weight: 600;
+    text-decoration: none;
 }
 
 .auth-footer a:hover {
     text-decoration: underline;
 }
 
-.error-message {
-    padding: 12px;
-    background: #fef2f2;
-    color: #b91c1c;
-    border: 1px solid #fecaca;
-    border-radius: 8px;
-    margin-bottom: 18px;
+.auth-footer button {
+    border: none;
+    background: none;
+    color: #2563eb;
     font-size: 14px;
-    overflow-wrap: anywhere;
+    font-weight: 600;
+    cursor: pointer;
 }
 
+.auth-footer button:hover {
+    text-decoration: underline;
+}
+
+/* ==============================
+   RESPONSIVE DESIGN
+============================== */
+
 @media (max-width: 480px) {
+    .auth-container {
+        padding: 15px;
+    }
+
     .auth-card {
         padding: 28px 22px;
     }
 
     .auth-card h1 {
         font-size: 24px;
+    }
+
+    .auth-logo {
+        font-size: 25px;
     }
 }

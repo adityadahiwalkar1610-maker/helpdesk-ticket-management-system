@@ -1,5 +1,5 @@
-
 import React, { useEffect, useState } from "react";
+import Swal from "sweetalert2";
 import {
     updateTicket,
     updateTicketStatus
@@ -10,9 +10,6 @@ function TicketList({ tickets, onDelete, deletingId }) {
     const [localTickets, setLocalTickets] = useState(tickets || []);
 
     const [statusUpdatingId, setStatusUpdatingId] = useState(null);
-    const [statusError, setStatusError] = useState("");
-    const [statusSuccess, setStatusSuccess] = useState("");
-
     const [editingTicketId, setEditingTicketId] = useState(null);
     const [editForm, setEditForm] = useState({
         title: "",
@@ -23,17 +20,14 @@ function TicketList({ tickets, onDelete, deletingId }) {
 
     const role = localStorage.getItem("userRole")?.toUpperCase();
     const isStaff = role === "SUPPORT" || role === "ADMIN";
-
-    // Regular users receive only their own tickets from the backend.
     const canManageTickets = role === "USER";
 
     useEffect(() => {
         setLocalTickets(tickets || []);
     }, [tickets]);
 
+    // STAFF: Update ticket status or priority
     const handleStaffUpdate = async (ticketId, newStatus, newPriority) => {
-        setStatusError("");
-        setStatusSuccess("");
         setStatusUpdatingId(ticketId);
 
         try {
@@ -49,27 +43,32 @@ function TicketList({ tickets, onDelete, deletingId }) {
                 )
             );
 
-            setStatusSuccess(`Ticket #${ticketId} updated successfully.`);
+            await Swal.fire({
+                icon: "success",
+                title: "Ticket Updated!",
+                text: `Ticket #${ticketId} has been updated successfully.`,
+                confirmButtonColor: "#3085d6"
+            });
         } catch (error) {
             console.error("Ticket update error:", error);
 
             const message = error.response?.data?.message;
 
-            setStatusError(
-                typeof message === "string"
+            await Swal.fire({
+                icon: "error",
+                title: "Update Failed!",
+                text: typeof message === "string"
                     ? message
-                    : "Unable to update ticket. Please try again."
-            );
+                    : "Unable to update ticket. Please try again.",
+                confirmButtonColor: "#d33"
+            });
         } finally {
             setStatusUpdatingId(null);
         }
     };
 
-    // Open the edit form
+    // Open edit form
     const handleEditClick = (ticket) => {
-        setStatusError("");
-        setStatusSuccess("");
-
         setEditingTicketId(ticket.id);
 
         setEditForm({
@@ -78,7 +77,7 @@ function TicketList({ tickets, onDelete, deletingId }) {
         });
     };
 
-    // Update edit form fields
+    // Handle edit input changes
     const handleEditChange = (e) => {
         const { name, value } = e.target;
 
@@ -103,13 +102,16 @@ function TicketList({ tickets, onDelete, deletingId }) {
         e.preventDefault();
 
         if (!editForm.title.trim() || !editForm.description.trim()) {
-            setStatusError("Ticket title and description cannot be empty.");
+            await Swal.fire({
+                icon: "warning",
+                title: "Required Fields",
+                text: "Ticket title and description cannot be empty.",
+                confirmButtonColor: "#3085d6"
+            });
             return;
         }
 
         setSavingEdit(true);
-        setStatusError("");
-        setStatusSuccess("");
 
         try {
             const updatedTicket = {
@@ -129,17 +131,25 @@ function TicketList({ tickets, onDelete, deletingId }) {
 
             setEditingTicketId(null);
 
-            setStatusSuccess(`Ticket #${ticketId} updated successfully.`);
+            await Swal.fire({
+                icon: "success",
+                title: "Ticket Edited!",
+                text: `Ticket #${ticketId} has been updated successfully.`,
+                confirmButtonColor: "#3085d6"
+            });
         } catch (error) {
             console.error("Edit ticket error:", error);
 
             const message = error.response?.data?.message;
 
-            setStatusError(
-                typeof message === "string"
+            await Swal.fire({
+                icon: "error",
+                title: "Edit Failed!",
+                text: typeof message === "string"
                     ? message
-                    : "Unable to edit ticket. Please try again."
-            );
+                    : "Unable to edit ticket. Please try again.",
+                confirmButtonColor: "#d33"
+            });
         } finally {
             setSavingEdit(false);
         }
@@ -160,18 +170,6 @@ function TicketList({ tickets, onDelete, deletingId }) {
 
     return (
         <div className="table-card">
-
-            {statusError && (
-                <div className="ticket-status-message ticket-error-message" role="alert">
-                    {statusError}
-                </div>
-            )}
-
-            {statusSuccess && (
-                <div className="ticket-status-message ticket-success-message">
-                    {statusSuccess}
-                </div>
-            )}
 
             <div className="ticket-table-heading">
                 <div>

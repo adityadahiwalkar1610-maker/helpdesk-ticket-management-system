@@ -8,6 +8,7 @@ import {
 } from "react-router-dom";
 
 import { useEffect, useState } from "react";
+import Swal from "sweetalert2";
 
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -28,6 +29,8 @@ function Dashboard() {
 
     const token = localStorage.getItem("token");
     const userName = localStorage.getItem("userName") || "User";
+    const welcomeMessage =
+        localStorage.getItem("welcomeMessage") || "Welcome back";
     const userEmail = localStorage.getItem("userEmail") || "";
     const userRole = localStorage.getItem("userRole") || "USER";
 
@@ -35,10 +38,12 @@ function Dashboard() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
     const [deletingId, setDeletingId] = useState(null);
+    const [creatingTicket, setCreatingTicket] = useState(false);
     const [activePage, setActivePage] = useState("overview");
     const [searchText, setSearchText] = useState("");
 
-    const isStaff = userRole === "SUPPORT" || userRole === "ADMIN";
+    const isStaff =
+        userRole === "SUPPORT" || userRole === "ADMIN";
 
     // Fetch tickets from backend
     const fetchTickets = async () => {
@@ -50,8 +55,9 @@ function Dashboard() {
             setTickets(response.data);
 
         } catch (err) {
-            console.error(err);
+            console.error("Fetch tickets error:", err);
             setError("Unable to load tickets. Please try again.");
+
         } finally {
             setLoading(false);
         }
@@ -66,25 +72,83 @@ function Dashboard() {
 
     // Create ticket
     const handleAddTicket = async (ticketData) => {
+        setCreatingTicket(true);
+
         try {
             await createTicket(ticketData);
-            alert("Ticket created successfully!");
+
+            await Swal.fire({
+                icon: "success",
+                title: "Ticket Created!",
+                text: "Your ticket has been created successfully.",
+                confirmButtonText: "OK",
+                confirmButtonColor: "#3085d6"
+            });
+
             setActivePage("tickets");
             await fetchTickets();
+
         } catch (err) {
-            alert(err.response?.data?.message || "Failed to create ticket.");
+            console.error("Create ticket error:", err);
+
+            await Swal.fire({
+                icon: "error",
+                title: "Creation Failed!",
+                text:
+                    err.response?.data?.message ||
+                    "Failed to create ticket. Please try again.",
+                confirmButtonColor: "#d33"
+            });
+
+            throw err;
+
+        } finally {
+            setCreatingTicket(false);
         }
     };
 
     // Delete ticket
     const handleDeleteTicket = async (id) => {
+        const result = await Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to recover this ticket!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            confirmButtonText: "Yes, delete it!",
+            cancelButtonText: "Cancel"
+        });
+
+        if (!result.isConfirmed) {
+            return;
+        }
+
         try {
             setDeletingId(id);
+
             await deleteTicket(id);
             await fetchTickets();
-            alert("Ticket deleted successfully!");
+
+            await Swal.fire({
+                icon: "success",
+                title: "Ticket Deleted!",
+                text: "Your ticket has been deleted successfully.",
+                confirmButtonColor: "#3085d6"
+            });
+
         } catch (err) {
-            alert(err.response?.data?.message || "Failed to delete ticket.");
+            console.error("Delete ticket error:", err);
+
+            await Swal.fire({
+                icon: "error",
+                title: "Deletion Failed!",
+                text:
+                    err.response?.data?.message ||
+                    "Failed to delete ticket. Please try again.",
+                confirmButtonColor: "#d33"
+            });
+
         } finally {
             setDeletingId(null);
         }
@@ -92,26 +156,41 @@ function Dashboard() {
 
     // Logout
     const handleLogout = () => {
+        // Clear session information only.
+        // Keep lastLoginEmail and hasLoggedIn_email.
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("userName");
         localStorage.removeItem("userEmail");
         localStorage.removeItem("userRole");
+        localStorage.removeItem("welcomeMessage");
 
-        navigate("/login");
+        navigate("/login", { replace: true });
     };
 
+    // Protect dashboard
     if (!token) {
         return <Navigate to="/login" replace />;
     }
 
     // Ticket statistics
-    const openCount = tickets.filter(t => t.status === "OPEN").length;
-    const progressCount = tickets.filter(t => t.status === "IN_PROGRESS").length;
-    const resolvedCount = tickets.filter(t => t.status === "RESOLVED").length;
-    const closedCount = tickets.filter(t => t.status === "CLOSED").length;
+    const openCount = tickets.filter(
+        t => t.status === "OPEN"
+    ).length;
 
-    // Search tickets filter
+    const progressCount = tickets.filter(
+        t => t.status === "IN_PROGRESS"
+    ).length;
+
+    const resolvedCount = tickets.filter(
+        t => t.status === "RESOLVED"
+    ).length;
+
+    const closedCount = tickets.filter(
+        t => t.status === "CLOSED"
+    ).length;
+
+    // Search tickets
     const filteredTickets = tickets.filter((ticket) => {
         const search = searchText.toLowerCase().trim();
 
@@ -136,16 +215,21 @@ function Dashboard() {
 
                 <div className="sidebar-logo">
                     <div className="logo-symbol">H</div>
+
                     <div>
                         <h2>HelpDesk<span>.</span></h2>
                         <small>SUPPORT CENTER</small>
                     </div>
                 </div>
 
-                <div className="sidebar-section-label">WORKSPACE</div>
+                <div className="sidebar-section-label">
+                    WORKSPACE
+                </div>
 
                 <button
-                    className={`sidebar-item ${activePage === "overview" ? "selected" : ""}`}
+                    className={`sidebar-item ${
+                        activePage === "overview" ? "selected" : ""
+                    }`}
                     onClick={() => showPage("overview")}
                 >
                     <span className="nav-icon">◫</span>
@@ -153,7 +237,9 @@ function Dashboard() {
                 </button>
 
                 <button
-                    className={`sidebar-item ${activePage === "tickets" ? "selected" : ""}`}
+                    className={`sidebar-item ${
+                        activePage === "tickets" ? "selected" : ""
+                    }`}
                     onClick={() => showPage("tickets")}
                 >
                     <span className="nav-icon">▤</span>
@@ -162,7 +248,9 @@ function Dashboard() {
                 </button>
 
                 <button
-                    className={`sidebar-item ${activePage === "create" ? "selected" : ""}`}
+                    className={`sidebar-item ${
+                        activePage === "create" ? "selected" : ""
+                    }`}
                     onClick={() => showPage("create")}
                 >
                     <span className="nav-icon">＋</span>
@@ -187,6 +275,7 @@ function Dashboard() {
                     </div>
 
                     <div className="sidebar-profile">
+
                         <div className="profile-avatar">
                             {userName.charAt(0).toUpperCase()}
                         </div>
@@ -203,6 +292,7 @@ function Dashboard() {
                         >
                             ↗
                         </button>
+
                     </div>
 
                 </div>
@@ -217,10 +307,15 @@ function Dashboard() {
 
                     <div className="breadcrumb">
                         Workspace <span>/</span>
+
                         <strong>
-                            {activePage === "overview" ? "Overview" :
-                             activePage === "tickets" ? "All Tickets" :
-                             activePage === "create" ? "Create Ticket" : "Profile"}
+                            {activePage === "overview"
+                                ? "Overview"
+                                : activePage === "tickets"
+                                ? "All Tickets"
+                                : activePage === "create"
+                                ? "Create Ticket"
+                                : "Profile"}
                         </strong>
                     </div>
 
@@ -229,11 +324,14 @@ function Dashboard() {
                         {/* SEARCH BAR */}
                         <div className="top-search">
                             <span>⌕</span>
+
                             <input
                                 type="text"
                                 placeholder="Search by ID, title, description, status or priority..."
                                 value={searchText}
-                                onChange={(e) => setSearchText(e.target.value)}
+                                onChange={(e) =>
+                                    setSearchText(e.target.value)
+                                }
                             />
 
                             {searchText && (
@@ -252,6 +350,7 @@ function Dashboard() {
 
                         {/* USER PROFILE */}
                         <div className="topbar-user">
+
                             <div className="topbar-avatar">
                                 {userName.charAt(0).toUpperCase()}
                             </div>
@@ -260,6 +359,7 @@ function Dashboard() {
                                 <strong>{userName}</strong>
                                 <small>{userRole}</small>
                             </div>
+
                         </div>
 
                         {/* LOGOUT BUTTON */}
@@ -282,10 +382,18 @@ function Dashboard() {
                         <>
 
                             <div className="page-heading">
+
                                 <div>
-                                    <div className="eyebrow">YOUR WORKSPACE</div>
+                                    <div className="eyebrow">
+                                        YOUR WORKSPACE
+                                    </div>
+
                                     <h1>Dashboard Overview</h1>
-                                    <p>Manage your support requests and track their progress.</p>
+
+                                    <p>
+                                        Manage your support requests and track
+                                        their progress.
+                                    </p>
                                 </div>
 
                                 <button
@@ -294,6 +402,7 @@ function Dashboard() {
                                 >
                                     <span>＋</span> Create New Ticket
                                 </button>
+
                             </div>
 
                             {/* WELCOME BANNER */}
@@ -306,14 +415,16 @@ function Dashboard() {
                                     </div>
 
                                     <h2>
-                                        Hello, {userName.split(" ")[0]}!
+                                        {welcomeMessage},{" "}
+                                        {userName.split(" ")[0]}!
                                         <br />
                                         How can we help you today?
                                     </h2>
 
                                     <p>
-                                        Submit a support request, track existing tickets,
-                                        and stay updated on your issues.
+                                        Submit a support request, track
+                                        existing tickets, and stay updated
+                                        on your issues.
                                     </p>
 
                                     <button
@@ -363,11 +474,17 @@ function Dashboard() {
 
                                 <div className="stat-card">
                                     <div className="stat-top">
-                                        <div className="stat-icon purple">▤</div>
-                                        <span className="stat-caption">ALL TIME</span>
+                                        <div className="stat-icon purple">
+                                            ▤
+                                        </div>
+                                        <span className="stat-caption">
+                                            ALL TIME
+                                        </span>
                                     </div>
+
                                     <h3>{tickets.length}</h3>
                                     <p>Total Tickets</p>
+
                                     <div className="stat-bottom">
                                         <span className="stat-line purple-line"></span>
                                         <small>All submitted requests</small>
@@ -376,11 +493,17 @@ function Dashboard() {
 
                                 <div className="stat-card">
                                     <div className="stat-top">
-                                        <div className="stat-icon orange">◷</div>
-                                        <span className="stat-caption">PENDING</span>
+                                        <div className="stat-icon orange">
+                                            ◷
+                                        </div>
+                                        <span className="stat-caption">
+                                            PENDING
+                                        </span>
                                     </div>
+
                                     <h3>{openCount}</h3>
                                     <p>Open Tickets</p>
+
                                     <div className="stat-bottom">
                                         <span className="stat-line orange-line"></span>
                                         <small>Waiting for attention</small>
@@ -389,11 +512,17 @@ function Dashboard() {
 
                                 <div className="stat-card">
                                     <div className="stat-top">
-                                        <div className="stat-icon blue">↻</div>
-                                        <span className="stat-caption">ACTIVE</span>
+                                        <div className="stat-icon blue">
+                                            ↻
+                                        </div>
+                                        <span className="stat-caption">
+                                            ACTIVE
+                                        </span>
                                     </div>
+
                                     <h3>{progressCount}</h3>
                                     <p>In Progress</p>
+
                                     <div className="stat-bottom">
                                         <span className="stat-line blue-line"></span>
                                         <small>Currently being handled</small>
@@ -402,11 +531,17 @@ function Dashboard() {
 
                                 <div className="stat-card">
                                     <div className="stat-top">
-                                        <div className="stat-icon green">✓</div>
-                                        <span className="stat-caption">COMPLETED</span>
+                                        <div className="stat-icon green">
+                                            ✓
+                                        </div>
+                                        <span className="stat-caption">
+                                            COMPLETED
+                                        </span>
                                     </div>
+
                                     <h3>{resolvedCount + closedCount}</h3>
                                     <p>Resolved Tickets</p>
+
                                     <div className="stat-bottom">
                                         <span className="stat-line green-line"></span>
                                         <small>Successfully completed</small>
@@ -421,6 +556,7 @@ function Dashboard() {
                                 <section className="panel recent-panel">
 
                                     <div className="panel-heading">
+
                                         <div>
                                             <h2>Recent Tickets</h2>
                                             <p>Your latest support requests</p>
@@ -432,10 +568,13 @@ function Dashboard() {
                                         >
                                             View all →
                                         </button>
+
                                     </div>
 
                                     {loading ? (
-                                        <p className="empty-message">Loading tickets...</p>
+                                        <p className="empty-message">
+                                            Loading tickets...
+                                        </p>
                                     ) : error ? (
                                         <p className="error-message">{error}</p>
                                     ) : tickets.length === 0 ? (
@@ -443,11 +582,16 @@ function Dashboard() {
                                         <div className="empty-state">
                                             <div>▤</div>
                                             <h3>No tickets yet</h3>
-                                            <p>Your submitted tickets will appear here.</p>
+                                            <p>
+                                                Your submitted tickets will
+                                                appear here.
+                                            </p>
 
                                             <button
                                                 className="primary-button"
-                                                onClick={() => showPage("create")}
+                                                onClick={() =>
+                                                    showPage("create")
+                                                }
                                             >
                                                 Create your first ticket
                                             </button>
@@ -457,24 +601,41 @@ function Dashboard() {
 
                                         <div className="recent-list">
 
-                                            {[...tickets].slice(-5).reverse().map(ticket => (
-                                                <div className="recent-ticket" key={ticket.id}>
+                                            {[...tickets]
+                                                .slice(-5)
+                                                .reverse()
+                                                .map(ticket => (
+                                                    <div
+                                                        className="recent-ticket"
+                                                        key={ticket.id}
+                                                    >
 
-                                                    <div className="ticket-mini-icon">#</div>
+                                                        <div className="ticket-mini-icon">
+                                                            #
+                                                        </div>
 
-                                                    <div className="recent-ticket-info">
-                                                        <strong>
-                                                            {ticket.title || `Ticket #${ticket.id}`}
-                                                        </strong>
-                                                        <small>Ticket #{ticket.id}</small>
+                                                        <div className="recent-ticket-info">
+                                                            <strong>
+                                                                {ticket.title ||
+                                                                    `Ticket #${ticket.id}`}
+                                                            </strong>
+
+                                                            <small>
+                                                                Ticket #{ticket.id}
+                                                            </small>
+                                                        </div>
+
+                                                        <span
+                                                            className={`status-pill ${ticket.status?.toLowerCase()}`}
+                                                        >
+                                                            {ticket.status?.replace(
+                                                                "_",
+                                                                " "
+                                                            )}
+                                                        </span>
+
                                                     </div>
-
-                                                    <span className={`status-pill ${ticket.status?.toLowerCase()}`}>
-                                                        {ticket.status?.replace("_", " ")}
-                                                    </span>
-
-                                                </div>
-                                            ))}
+                                                ))}
 
                                         </div>
 
@@ -495,8 +656,13 @@ function Dashboard() {
                                         {userName.charAt(0).toUpperCase()}
                                     </div>
 
-                                    <h3 className="account-name">{userName}</h3>
-                                    <p className="account-email">{userEmail}</p>
+                                    <h3 className="account-name">
+                                        {userName}
+                                    </h3>
+
+                                    <p className="account-email">
+                                        {userEmail}
+                                    </p>
 
                                     <div className="account-role">
                                         <span>Account role</span>
@@ -505,7 +671,11 @@ function Dashboard() {
 
                                     <div className="account-role">
                                         <span>Access level</span>
-                                        <strong>{isStaff ? "Staff access" : "User access"}</strong>
+                                        <strong>
+                                            {isStaff
+                                                ? "Staff access"
+                                                : "User access"}
+                                        </strong>
                                     </div>
 
                                 </section>
@@ -517,13 +687,17 @@ function Dashboard() {
 
                     {/* ALL TICKETS */}
                     {activePage === "tickets" && (
-
                         <section className="panel full-panel">
 
                             <div className="page-heading">
+
                                 <div>
-                                    <div className="eyebrow">TICKET MANAGEMENT</div>
+                                    <div className="eyebrow">
+                                        TICKET MANAGEMENT
+                                    </div>
+
                                     <h1>All Tickets</h1>
+
                                     <p>
                                         {isStaff
                                             ? "View and manage support requests."
@@ -537,6 +711,7 @@ function Dashboard() {
                                 >
                                     ＋ New Ticket
                                 </button>
+
                             </div>
 
                             {loading ? (
@@ -544,38 +719,43 @@ function Dashboard() {
                             ) : error ? (
                                 <p className="error-message">{error}</p>
                             ) : (
-
                                 <TicketList
                                     tickets={filteredTickets}
                                     onDelete={handleDeleteTicket}
                                     deletingId={deletingId}
                                 />
-
                             )}
 
                         </section>
-
                     )}
 
                     {/* CREATE TICKET */}
                     {activePage === "create" && (
-
                         <section className="panel full-panel">
 
                             <div className="page-heading">
                                 <div>
-                                    <div className="eyebrow">SUPPORT REQUEST</div>
+                                    <div className="eyebrow">
+                                        SUPPORT REQUEST
+                                    </div>
+
                                     <h1>Create a Ticket</h1>
-                                    <p>Tell us about the issue you are experiencing.</p>
+
+                                    <p>
+                                        Tell us about the issue you are
+                                        experiencing.
+                                    </p>
                                 </div>
                             </div>
 
                             <div className="create-ticket-wrapper">
-                                <TicketForm onAdd={handleAddTicket} />
+                                <TicketForm
+                                    onAdd={handleAddTicket}
+                                    submitting={creatingTicket}
+                                />
                             </div>
 
                         </section>
-
                     )}
 
                 </main>
@@ -595,10 +775,33 @@ function App() {
     return (
         <BrowserRouter>
             <Routes>
-                <Route path="/" element={<Navigate to="/login" replace />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/register" element={<Register />} />
-                <Route path="/dashboard" element={<Dashboard />} />
+
+                <Route
+                    path="/"
+                    element={<Navigate to="/login" replace />}
+                />
+
+                <Route
+                    path="/login"
+                    element={<Login />}
+                />
+
+                <Route
+                    path="/register"
+                    element={<Register />}
+                />
+
+                <Route
+                    path="/dashboard"
+                    element={<Dashboard />}
+                />
+
+                {/* Unknown routes go to login */}
+                <Route
+                    path="*"
+                    element={<Navigate to="/login" replace />}
+                />
+
             </Routes>
         </BrowserRouter>
     );
