@@ -1,3 +1,4 @@
+//configuring password encryption in your Helpdesk Ticket Management System.
 package com.helpdesk.backend.config;
 
 import org.springframework.context.annotation.Bean;
@@ -10,6 +11,6 @@ public class PasswordConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+        return new BCryptPasswordEncoder(); //This creates a BCrypt password encoder.
     }
 }

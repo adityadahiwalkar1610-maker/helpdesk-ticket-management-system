@@ -14,7 +14,7 @@ public class Ticket {
     @GeneratedValue(strategy = GenerationType.IDENTITY) //auto generate Ids
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false)//configure database column
     private String title;
 
     @Column(length = 1000)

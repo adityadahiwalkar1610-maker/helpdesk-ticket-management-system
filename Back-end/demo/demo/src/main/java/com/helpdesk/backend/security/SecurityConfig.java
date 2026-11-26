@@ -31,18 +31,14 @@ public class SecurityConfig {
             throws Exception {
 
         http
-            // Enable CORS
             .cors(Customizer.withDefaults())
 
-            // Disable CSRF for JWT-based authentication
             .csrf(csrf -> csrf.disable())
 
-            // Stateless authentication
             .sessionManagement(session -> session
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             )
 
-            // Handle unauthorized requests
             .exceptionHandling(exception -> exception
                 .authenticationEntryPoint((request, response, authException) -> {
                     response.sendError(
@@ -52,16 +48,17 @@ public class SecurityConfig {
                 })
             )
 
-            // Role-based authorization
             .authorizeHttpRequests(auth -> auth
 
-                // Allow preflight requests
+                // Allow CORS preflight requests
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
-                // Public authentication APIs
+                // Public authentication and password reset APIs
                 .requestMatchers(
                     "/api/users/register",
-                    "/api/users/login"
+                    "/api/users/login",
+                    "/api/users/check-email",
+                    "/api/users/reset-password"
                 ).permitAll()
 
                 // Only SUPPORT and ADMIN can update tickets through staff API
@@ -72,7 +69,6 @@ public class SecurityConfig {
                 .anyRequest().authenticated()
             )
 
-            // Add JWT filter
             .addFilterBefore(
                 jwtAuthenticationFilter,
                 UsernamePasswordAuthenticationFilter.class
@@ -86,7 +82,6 @@ public class SecurityConfig {
 
         CorsConfiguration configuration = new CorsConfiguration();
 
-        // React frontend port
         configuration.setAllowedOrigins(
             List.of("http://localhost:5174")
         );

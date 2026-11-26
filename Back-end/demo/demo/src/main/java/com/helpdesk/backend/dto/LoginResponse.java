@@ -1,5 +1,8 @@
+//Used to send login information back to the frontend after successful authentication.
 
 package com.helpdesk.backend.dto;
+
+
 
 public class LoginResponse {
 
@@ -8,19 +11,22 @@ public class LoginResponse {
     private String email;
     private String role;
     private String token;
+    private String welcomeMessage;
 
     public LoginResponse(
             Long id,
             String name,
             String email,
             String role,
-            String token) {
+            String token,
+            String welcomeMessage) {
 
         this.id = id;
         this.name = name;
         this.email = email;
         this.role = role;
         this.token = token;
+        this.welcomeMessage = welcomeMessage;
     }
 
     public Long getId() {
@@ -41,5 +47,9 @@ public class LoginResponse {
 
     public String getToken() {
         return token;
+    }
+
+    public String getWelcomeMessage() {
+        return welcomeMessage;
     }
 }

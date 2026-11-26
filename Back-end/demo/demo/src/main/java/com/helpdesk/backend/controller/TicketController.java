@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.*;
 import com.helpdesk.backend.entity.Ticket;
 import com.helpdesk.backend.service.TicketService;
 
-@RestController
-@RequestMapping("/api/tickets")
+@RestController  //Handles API request and return response
+@RequestMapping("/api/tickets")//Creates API endpoint
 public class TicketController {
 
     private final TicketService ticketService;

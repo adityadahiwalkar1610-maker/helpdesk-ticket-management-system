@@ -1,4 +1,4 @@
-
+//Used to receive login details from the frontend.
 package com.helpdesk.backend.dto;
 
 public class LoginRequest {

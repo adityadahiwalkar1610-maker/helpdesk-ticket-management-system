@@ -6,15 +6,15 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-@Configuration
+@Configuration  //This class contains configuration settings for my application.
 public class CorsConfig {
 
-    @Bean
-    public WebMvcConfigurer corsConfigurer() {
+    @Bean //tells Spring to create and manage this object.
+    public WebMvcConfigurer corsConfigurer() {   //allows us to customize how Spring handles web requests, including CORS.
 
         return new WebMvcConfigurer() {
 
-            @Override
+            @Override    //This method is where we configure which frontend websites are allowed to communicate with our backend.
             public void addCorsMappings(CorsRegistry registry) {
 
                 registry.addMapping("/api/**")

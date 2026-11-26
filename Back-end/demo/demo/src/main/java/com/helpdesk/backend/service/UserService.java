@@ -1,9 +1,13 @@
 //This file handles registration and login logic.
 //validates the information.
+
+
+
 package com.helpdesk.backend.service;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.helpdesk.backend.dto.RegisterRequest;
 import com.helpdesk.backend.dto.LoginRequest;
@@ -29,69 +33,85 @@ public class UserService {
         this.jwtService = jwtService;
     }
 
-    // REGISTER
+    // REGISTER USER
     public User registerUser(RegisterRequest request) {
 
         if (request.getName() == null ||
                 request.getName().isBlank() ||
+                !request.getName().trim()
+                        .matches("[A-Za-z]+(?: [A-Za-z]+)*") ||
                 request.getEmail() == null ||
                 request.getEmail().isBlank() ||
                 request.getPassword() == null ||
                 request.getPassword().length() < 8) {
 
-            throw new IllegalArgumentException( // that is invalid, inappropriate 
-                    "Enter a name, valid email and password of at least 8 characters"
+            throw new IllegalArgumentException(
+                    "Enter a valid name, email and password of at least 8 characters."
             );
         }
 
         String email = request.getEmail().trim().toLowerCase();
 
         if (userRepository.existsByEmail(email)) {
-            throw new RuntimeException("Email already registered");
+            throw new IllegalArgumentException("Email already registered");
         }
 
         User user = new User();
 
         user.setName(request.getName().trim());
         user.setEmail(email);
-
-        // Never store a plain-text password
-        user.setPassword(
-                passwordEncoder.encode(request.getPassword())
-        );
-
-        // Users cannot choose their own role during registration
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setRole("USER");
+        user.setHasLoggedIn(false);
 
         return userRepository.save(user);
     }
 
-    // LOGIN
+    // LOGIN USER
+    @Transactional
     public LoginResponse loginUser(LoginRequest request) {
 
-        if (request.getEmail() == null ||
-                request.getPassword() == null) {
+        if (request == null ||
+                request.getEmail() == null ||
+                request.getEmail().isBlank() ||
+                request.getPassword() == null ||
+                request.getPassword().isBlank()) {
 
-            throw new RuntimeException("Invalid email or password");
+            throw new IllegalArgumentException(
+                    "Please enter your email and password."
+            );
         }
 
         String email = request.getEmail().trim().toLowerCase();
 
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() ->
-                        new RuntimeException("Invalid email or password")
+                        new IllegalArgumentException("Invalid email or password.")
                 );
 
-        boolean passwordMatches = passwordEncoder.matches(
-                request.getPassword(),
-                user.getPassword()
-        );
+        // Verify BCrypt password
+        if (user.getPassword() == null ||
+                !passwordEncoder.matches(
+                        request.getPassword(),
+                        user.getPassword())) {
 
-        if (!passwordMatches) {
-            throw new RuntimeException("Invalid email or password");
+            throw new IllegalArgumentException(
+                    "Invalid email or password."
+            );
         }
 
-        // Generate JWT after successful password verification
+        // First login / returning login
+        String welcomeMessage;
+
+        if (!user.isHasLoggedIn()) {
+            welcomeMessage = "Welcome";
+            user.setHasLoggedIn(true);
+            userRepository.save(user);
+        } else {
+            welcomeMessage = "Welcome back";
+        }
+
+        // Generate JWT
         String token = jwtService.generateToken(user);
 
         return new LoginResponse(
@@ -99,7 +119,49 @@ public class UserService {
                 user.getName(),
                 user.getEmail(),
                 user.getRole(),
-                token
+                token,
+                welcomeMessage
         );
+    }
+
+    // CHECK EMAIL
+    public boolean checkEmailExists(String email) {
+
+        if (email == null || email.isBlank()) {
+            throw new IllegalArgumentException(
+                    "Please enter your email address."
+            );
+        }
+
+        return userRepository.existsByEmail(
+                email.trim().toLowerCase()
+        );
+    }
+
+    // RESET PASSWORD
+    @Transactional
+    public void resetPassword(String email, String newPassword) {
+
+        if (email == null || email.isBlank()) {
+            throw new IllegalArgumentException(
+                    "Please enter your email address."
+            );
+        }
+
+        if (newPassword == null || newPassword.length() < 8) {
+            throw new IllegalArgumentException(
+                    "New password must contain at least 8 characters."
+            );
+        }
+
+        User user = userRepository.findByEmail(
+                email.trim().toLowerCase()
+        ).orElseThrow(() ->
+                new IllegalArgumentException("Email not registered")
+        );
+
+        user.setPassword(passwordEncoder.encode(newPassword));
+
+        userRepository.save(user);
     }
 }

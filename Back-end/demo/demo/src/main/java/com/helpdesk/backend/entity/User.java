@@ -29,6 +29,10 @@ public class User {
 
     private LocalDateTime createdAt;
 
+    // Tracks whether the user has logged in before
+    @Column(nullable = false)
+    private boolean hasLoggedIn = false;
+
     @JsonIgnore
     @OneToMany(mappedBy = "user")
     private List<Ticket> tickets;
@@ -84,6 +88,14 @@ public class User {
 
     public LocalDateTime getCreatedAt() {
         return createdAt;
+    }
+
+    public boolean isHasLoggedIn() {
+        return hasLoggedIn;
+    }
+
+    public void setHasLoggedIn(boolean hasLoggedIn) {
+        this.hasLoggedIn = hasLoggedIn;
     }
 
     public List<Ticket> getTickets() {

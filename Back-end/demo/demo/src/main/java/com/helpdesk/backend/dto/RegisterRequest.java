@@ -1,4 +1,4 @@
-
+//Used to receive registration details from the frontend, such as name, email, and password.
 package com.helpdesk.backend.dto;
 
 public class RegisterRequest {

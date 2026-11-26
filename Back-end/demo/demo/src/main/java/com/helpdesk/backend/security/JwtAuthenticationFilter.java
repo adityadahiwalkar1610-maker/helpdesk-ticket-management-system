@@ -1,5 +1,8 @@
 //checks the token and identifies the logged-in user.
+
 package com.helpdesk.backend.security;
+
+// Checks the token and identifies the logged-in user.
 
 import java.io.IOException;
 
@@ -29,6 +32,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         this.userDetailsService = userDetailsService;
     }
 
+    // Skip JWT authentication for public APIs
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+
+        String path = request.getServletPath();
+
+        return path.equals("/api/users/register")
+                || path.equals("/api/users/login")
+                || path.equals("/api/users/check-email")
+                || path.equals("/api/users/reset-password");
+    }
+
     @Override
     protected void doFilterInternal(
             HttpServletRequest request,
@@ -39,6 +54,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String authorizationHeader =
                 request.getHeader("Authorization");
 
+        // No token provided
         if (authorizationHeader == null ||
                 !authorizationHeader.startsWith("Bearer ")) {
 
