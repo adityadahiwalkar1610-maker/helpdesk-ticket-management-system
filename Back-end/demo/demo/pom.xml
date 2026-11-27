@@ -79,7 +79,7 @@
             <artifactId>spring-security-crypto</artifactId>
         </dependency>
 
-        <!-- MySQL -->
+        <!--postgresqL -->
         <dependency>
     <groupId>org.postgresql</groupId>
     <artifactId>postgresql</artifactId>
